@@ -23,7 +23,7 @@ import java.net.Socket;
 // implements onClickListener for the onclick behaviour of button
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button scanBtn;
-    TextView messageText, messageFormat;
+    TextView messageText, messageFormat, messageReturn;
     private Socket client;
     private PrintWriter printwriter;
     private EditText textField;
@@ -48,7 +48,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 printwriter.flush();
                 String fromServer;
                 while ((fromServer = in.readLine()) != null) {
-                    textField.setText(fromServer);
+                    String finalFromServer = fromServer;
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            messageReturn.setText(finalFromServer);
+
+                        }
+                    });
+
                     if (fromServer.equals("Msg received")) {
 
                         break;
@@ -82,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         scanBtn = findViewById(R.id.scanBtn);
         messageText = findViewById(R.id.textContent);
         messageFormat = findViewById(R.id.textFormat);
+        messageReturn = findViewById(R.id.textReturn);
 
         // adding listener to the button
         scanBtn.setOnClickListener(this);
