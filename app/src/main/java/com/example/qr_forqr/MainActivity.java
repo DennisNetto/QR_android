@@ -19,6 +19,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.InvalidKeyException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 
 // implements onClickListener for the onclick behaviour of button
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,37 +50,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText textField;
     private Button button;
     private String message;
+    KeyPairGenerator kpg;
+    KeyPair kp;
+    PublicKey publicKey;
+    PrivateKey privateKey;
+    byte[] encryptedBytes, decryptedBytes;
+    Cipher cipher, cipher1;
+    String encrypted, decrypted, ans;
+
 
     class ClientThread implements Runnable {
-        private final String message;
+        private String message;
 
         ClientThread(String message) {
             this.message = message;
+            try {
+                kpg = KeyPairGenerator.getInstance("RSA");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            kpg.initialize(2048);
+            kp = kpg.genKeyPair();
+            publicKey = kp.getPublic();
+            privateKey = kp.getPrivate();
         }
         @Override
         public void run() {
             try {
                 // the IP and port should be correct to have a connection established
                 // Creates a stream socket and connects it to the specified port number on the named host.
-                client = new Socket("3.21.205.75", 5050);  // connect to server
+                client = new Socket("3.144.231.253", 5050);  // connect to server
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 printwriter = new PrintWriter(client.getOutputStream(),true);
+                message = message + "." + publicKey;
                 printwriter.write(message);  // write the message to output stream
                 printwriter.flush();
+
                 String fromServer;
                 while ((fromServer = in.readLine()) != null) {
                     String finalFromServer = fromServer;
                     runOnUiThread(new Runnable() {
-
                         @Override
                         public void run() {
 
                             messageReturn.setText(finalFromServer);
 
+
                         }
                     });
 
-                    if (fromServer.equals("Msg received")) {
+                    if (fromServer != null) {
 
                         break;
                     }
