@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -54,9 +55,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     KeyPair kp;
     PublicKey publicKey;
     PrivateKey privateKey;
-    byte[] encryptedBytes, decryptedBytes;
+    byte[] decryptedBytes;
     Cipher cipher, cipher1;
     String encrypted, decrypted, ans;
+
+
+
+    public class RSADecrypt {
+
+        public String RSADecrypt(final byte[] encryptedBytes) throws NoSuchAlgorithmException, NoSuchPaddingException,
+                InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+
+            cipher1 = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher1.init(Cipher.DECRYPT_MODE, privateKey);
+            decryptedBytes = cipher1.doFinal(encryptedBytes);
+            decrypted = new String(decryptedBytes);
+            System.out.println("DDecrypted?????" + decrypted);
+            return decrypted;
+        }
+
+
+    }
+
+
 
 
     class ClientThread implements Runnable {
@@ -79,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 // the IP and port should be correct to have a connection established
                 // Creates a stream socket and connects it to the specified port number on the named host.
-                client = new Socket("3.144.231.253", 5050);  // connect to server
+                client = new Socket("18.219.232.254", 5050);  // connect to server
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 printwriter = new PrintWriter(client.getOutputStream(),true);
                 System.out.println(publicKey);
@@ -95,8 +116,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
-                            messageReturn.setText(finalFromServer);
+                            try {
+                                System.out.println(finalFromServer);
+                                byte[] serverty = org.apache.commons.codec.binary.Hex.decodeHex(finalFromServer);
+                                cipher1 = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+                                cipher1.init(Cipher.DECRYPT_MODE, privateKey);
+                                decryptedBytes = cipher1.doFinal(serverty);
+                                decrypted = new String(decryptedBytes);
+                            }
+                            catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println(decrypted);
+                            messageReturn.setText(decrypted);
 
 
                         }
