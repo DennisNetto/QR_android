@@ -82,8 +82,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 client = new Socket("3.144.231.253", 5050);  // connect to server
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 printwriter = new PrintWriter(client.getOutputStream(),true);
-                message = message + "." + publicKey;
+                System.out.println(publicKey);
+                System.out.println(message);
                 printwriter.write(message);  // write the message to output stream
+                printwriter.flush();
+                printwriter.write(String.valueOf(publicKey));
                 printwriter.flush();
 
                 String fromServer;
