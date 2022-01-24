@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,27 +18,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.InvalidKeyException;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.io.PrintWriter;
-import java.net.Socket;
+
+
 
 
 // implements onClickListener for the onclick behaviour of button
@@ -48,34 +35,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView messageText, messageFormat, messageReturn;
     private Socket client;
     private PrintWriter printwriter;
-    private EditText textField;
-    private Button button;
-    private String message;
     KeyPairGenerator kpg;
     KeyPair kp;
     PublicKey publicKey;
     PrivateKey privateKey;
     byte[] decryptedBytes;
-    Cipher cipher, cipher1;
-    String encrypted, decrypted, ans;
-
-
-
-    public class RSADecrypt {
-
-        public String RSADecrypt(final byte[] encryptedBytes) throws NoSuchAlgorithmException, NoSuchPaddingException,
-                InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-
-            cipher1 = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            cipher1.init(Cipher.DECRYPT_MODE, privateKey);
-            decryptedBytes = cipher1.doFinal(encryptedBytes);
-            decrypted = new String(decryptedBytes);
-            System.out.println("DDecrypted?????" + decrypted);
-            return decrypted;
-        }
-
-
-    }
+    Cipher cipher1;
+    String decrypted;
 
 
 
